@@ -18,7 +18,7 @@ module.exports = function(app: express$Application) {
 
     const cloneView = (
         {i18n, params: {type, source, recordName}}: express$Request,
-        res,
+        res
     ) => {
         const Record = record(type);
         const model = metadata.model(type);
@@ -34,7 +34,7 @@ module.exports = function(app: express$Application) {
             const recordTitle = oldRecord.getTitle(i18n);
             const title = i18n.format(
                 i18n.gettext("Cloning '%(recordTitle)s'"),
-                {recordTitle},
+                {recordTitle}
             );
 
             const data = {
@@ -75,7 +75,7 @@ module.exports = function(app: express$Application) {
     const createView = (
         {user, params: {type}, query: {source}, i18n}: express$Request,
         res,
-        next,
+        next
     ) => {
         if (!user) {
             return next();
@@ -110,11 +110,7 @@ module.exports = function(app: express$Application) {
     };
 
     const create = (req: express$Request, res, next) => {
-        const {
-            params: {type},
-            i18n,
-            lang,
-        } = req;
+        const {params: {type}, i18n, lang} = req;
         const props = {};
         const model = metadata.model(type);
         const typeOptions = options.types[type];
@@ -129,15 +125,13 @@ module.exports = function(app: express$Application) {
             /* istanbul ignore if */
             if (err) {
                 return next(
-                    new Error(i18n.gettext("Error processing upload.")),
+                    new Error(i18n.gettext("Error processing upload."))
                 );
             }
 
             const images = Array.isArray(files.images)
                 ? files.images
-                : files.images
-                    ? [files.images]
-                    : [];
+                : files.images ? [files.images] : [];
 
             for (const prop in model) {
                 props[prop] = fields[prop];
@@ -186,11 +180,11 @@ module.exports = function(app: express$Application) {
                                 new Error(
                                     i18n.format(
                                         i18n.gettext(
-                                            "Error processing image: %(image)s",
+                                            "Error processing image: %(image)s"
                                         ),
-                                        {image: file.name},
-                                    ),
-                                ),
+                                        {image: file.name}
+                                    )
+                                )
                             );
                         }
 
@@ -210,7 +204,7 @@ module.exports = function(app: express$Application) {
                     }
 
                     const filteredImages = unfilteredImages.filter(
-                        image => image,
+                        image => image
                     );
                     newRecord.images = filteredImages.map(image => image._id);
 
@@ -221,8 +215,8 @@ module.exports = function(app: express$Application) {
                             return next(
                                 new Error(
                                     "No valid images found, " +
-                                        "images are required.",
-                                ),
+                                        "images are required."
+                                )
                             );
                         }
 
@@ -233,7 +227,7 @@ module.exports = function(app: express$Application) {
                         if (err) {
                             console.error(`Error saving record: ${err}`);
                             return next(
-                                new Error(i18n.gettext("Error saving record.")),
+                                new Error(i18n.gettext("Error saving record."))
                             );
                         }
 
@@ -249,7 +243,7 @@ module.exports = function(app: express$Application) {
                         // images, as well.
                         Image.queueBatchSimilarityUpdate(mockBatch._id, finish);
                     });
-                },
+                }
             );
         });
     };
@@ -262,7 +256,7 @@ module.exports = function(app: express$Application) {
                 "/:type/:source/:recordName/clone",
                 auth,
                 canEdit,
-                cloneView,
+                cloneView
             );
         },
     };

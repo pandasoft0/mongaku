@@ -67,10 +67,7 @@ tap.test("validate (existing email)", t => {
     });
 
     user.validate(err => {
-        t.equal(
-            err.message,
-            "User validation failed: email: Email already exists",
-        );
+        t.equal(err.message, "User validation failed");
         t.end();
     });
 });

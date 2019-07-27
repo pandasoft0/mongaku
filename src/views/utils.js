@@ -11,7 +11,7 @@ module.exports = (
     options: Options,
     translations: {
         [message: string]: ?Array<string>,
-    },
+    }
 ) => {
     const urls = require("../lib/urls")(options);
     const numberFormat = new Intl.NumberFormat(lang);
@@ -41,24 +41,16 @@ module.exports = (
 
         // Format a number using commas
         stringNum(num: number): string {
-            try {
-                return numberFormat.format(num);
-            } catch (e) {
-                return num.toString();
-            }
+            return numberFormat.format(num);
         },
 
         fixedDate(date: Date): string {
-            try {
-                return dateFormat.format(date);
-            } catch (e) {
-                return date.toString();
-            }
+            return dateFormat.format(date);
         },
 
         format(fmt: string = "", props: {[key: string]: any}): string {
             return fmt.replace(/%\(\s*([^)]+)\s*\)s/g, (m, v) =>
-                String(props[v.trim()]),
+                String(props[v.trim()])
             );
         },
 

@@ -12,24 +12,6 @@ const User = new db.schema({
         required: true,
         unique: true,
         index: true,
-        validate: {
-            isAsync: true,
-            message: "Email already exists",
-            validator: function(email, callback) {
-                const User = models("User");
-
-                // Check only when it is a new user or when email field is modified
-                /* istanbul ignore else */
-                if (this.isNew || this.isModified("email")) {
-                    User.findOne({email: email}, (err, user) => {
-                        callback(!err && !user);
-                    });
-                } else {
-                    /* istanbul ignore next */
-                    callback(true);
-                }
-            },
-        },
     },
 
     // The Bcrypt-hashed password
@@ -73,6 +55,21 @@ User.virtual("password")
     .get(function() {
         return this._password;
     });
+
+User.path("email").validate(function(email, callback) {
+    const User = models("User");
+
+    // Check only when it is a new user or when email field is modified
+    /* istanbul ignore else */
+    if (this.isNew || this.isModified("email")) {
+        User.findOne({email: email}, (err, user) => {
+            callback(!err && !user);
+        });
+    } else {
+        /* istanbul ignore next */
+        callback(true);
+    }
+}, "Email already exists");
 
 User.methods = {
     authenticate(plainText: string): boolean {

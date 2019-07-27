@@ -35,8 +35,9 @@ const getDate = (date: YearRange): string => {
 const YearRange = ({date, url}: {date: YearRangeType, url: string}) => {
     return (
         <span key={date._id}>
-            <a href={url}>{getDate(date)}</a>
-            <br />
+            <a href={url}>
+                {getDate(date)}
+            </a><br />
         </span>
     );
 };

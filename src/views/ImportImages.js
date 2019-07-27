@@ -111,10 +111,9 @@ const ModelResult = ({result: {model, fileName}}: {result: Result}) => {
 
 const ImportImages = (props: Props, {gettext, format, fixedDate}: Context) => {
     const {title, adminURL, batch} = props;
-    const state =
-        batch.state === "error"
-            ? format(gettext("Error: %(error)s"), {error: batch.getError})
-            : batch.getStateName;
+    const state = batch.state === "error"
+        ? format(gettext("Error: %(error)s"), {error: batch.getError})
+        : batch.getStateName;
     const uploadDate = format(gettext("Uploaded: %(date)s"), {
         date: fixedDate(batch.created),
     });
@@ -132,11 +131,10 @@ const ImportImages = (props: Props, {gettext, format, fixedDate}: Context) => {
 
             <h1>{title}</h1>
             <p>{uploadDate}</p>
-            <p>
-                <strong>{state}</strong>
-            </p>
+            <p><strong>{state}</strong></p>
             {batch.state !== "completed" &&
-                batch.state !== "error" && <p>{lastUpdated}</p>}
+                batch.state !== "error" &&
+                <p>{lastUpdated}</p>}
 
             <ImportResult
                 {...props}

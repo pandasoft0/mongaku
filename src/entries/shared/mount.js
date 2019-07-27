@@ -1,7 +1,7 @@
 // @flow
 
 const React = require("react");
-const {hydrate} = require("react-dom");
+const {render} = require("react-dom");
 
 const Wrapper = require("../../views/Wrapper.js");
 const Page = require("../../views/Page.js");
@@ -25,13 +25,13 @@ module.exports = (View: React.ComponentType<*>) => {
         const root = document.getElementById("root");
 
         if (root) {
-            hydrate(
+            render(
                 <Wrapper {...options}>
                     <Page {...options}>
                         <View {...options} />
                     </Page>
                 </Wrapper>,
-                root,
+                root
             );
         }
     }

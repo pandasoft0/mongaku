@@ -44,7 +44,11 @@ const Value = ({
         return <span>{title}</span>;
     }
 
-    return <a href={urlValue}>{title}</a>;
+    return (
+        <a href={urlValue}>
+            {title}
+        </a>
+    );
 };
 
 const Values = (props: Props & {stringValues: Array<string>}) => {

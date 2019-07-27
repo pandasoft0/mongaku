@@ -24,61 +24,6 @@ const getBinary = bin => {
     return binPath;
 };
 
-const runBabel = watch => {
-    const rootDir = localFile("../..");
-    const srcDir = path.join(rootDir, "src");
-    const buildDir = path.join(rootDir, "build");
-    const configFile = path.join(rootDir, ".babelrc");
-    const binary = getBinary("babel");
-
-    const cmd = `${binary} ${srcDir} --out-dir ${buildDir} --config-file ${configFile} --verbose`;
-
-    if (watch) {
-        return shell.exec(`${cmd} -w`, {async: true});
-    }
-
-    return shell.exec(cmd);
-};
-
-const runWebpack = watch => {
-    const rootDir = localFile("../..");
-    const configFile = path.join(rootDir, "webpack.config.js");
-    const binary = getBinary("webpack");
-
-    const cmd = `${binary} --config ${configFile}`;
-
-    if (watch) {
-        return shell.exec(`${cmd} -w`, {async: true});
-    }
-
-    return shell.exec(cmd);
-};
-
-const runSupervisor = () => {
-    const cwd = process.cwd();
-    const localDir = localFile("..");
-    const serverjs = localFile("../mongaku.js");
-    const ignored = [
-        path.join(localDir, "node_modules"),
-        path.join(cwd, "node_modules"),
-        path.join(localDir, "..", "static"),
-        path.join(cwd, "static"),
-    ].join(",");
-
-    const devCmd = [
-        getBinary("supervisor"),
-        `-w ${localDir},${cwd}`,
-        "-e js",
-        `-i ${ignored}`,
-        "--",
-        serverjs,
-    ]
-        .concat(extraArgs)
-        .join(" ");
-
-    return shell.exec(devCmd, {async: true});
-};
-
 if (args.v || args.version) {
     console.log(pkg.version);
 } else if (cmd === "start") {
@@ -112,16 +57,61 @@ if (args.v || args.version) {
 } else if (cmd === "restart") {
     shell.exec(`${getBinary("naught")} deploy mongaku.ipc`);
 } else if (cmd === "build") {
-    runBabel();
-    runWebpack();
+    const rootDir = localFile("../..");
+    const srcDir = path.join(rootDir, "src");
+    const buildDir = path.join(rootDir, "build");
+
+    shell.exec(`${getBinary("babel")} ${srcDir} --out-dir ${buildDir}`);
+
+    const webpackConfig = path.join(rootDir, "webpack.config.js");
+    shell.exec(`${getBinary("webpack")} --config ${webpackConfig}`);
 } else if (cmd === "build-watch") {
-    runWebpack(true);
-    runBabel(true);
+    const rootDir = localFile("../..");
+    const srcDir = path.join(rootDir, "src");
+    const buildDir = path.join(rootDir, "build");
+
+    shell.exec(`${getBinary("babel")} ${srcDir} --out-dir ${buildDir} -w`);
+
+    const webpackConfig = path.join(rootDir, "webpack.config.js");
+    shell.exec(`${getBinary("webpack")} --config ${webpackConfig} -w`);
 } else if (cmd === "dev") {
-    runSupervisor();
-    runBabel(true);
-    runWebpack(true);
-} else if (cmd === "create" || cmd === "convert" || cmd === "i18n") {
+    const cwd = process.cwd();
+    const localDir = localFile("..");
+    const serverjs = localFile("../mongaku.js");
+    const ignored = [
+        path.join(localDir, "node_modules"),
+        path.join(cwd, "node_modules"),
+        path.join(localDir, "..", "static"),
+        path.join(cwd, "static"),
+    ].join(",");
+
+    const devCmd = [
+        getBinary("supervisor"),
+        `-w ${localDir},${cwd}`,
+        "-e js",
+        `-i ${ignored}`,
+        "--",
+        serverjs,
+    ]
+        .concat(extraArgs)
+        .join(" ");
+
+    shell.exec(devCmd);
+
+    const rootDir = localFile("../..");
+    const srcDir = path.join(rootDir, "src");
+    const buildDir = path.join(rootDir, "build");
+
+    shell.exec(`${getBinary("babel")} ${srcDir} --out-dir ${buildDir} -w`);
+
+    const webpackConfig = path.join(rootDir, "webpack.config.js");
+    shell.exec(`${getBinary("webpack")} --config ${webpackConfig} -w`);
+} else if (
+    cmd === "create" ||
+    cmd === "convert" ||
+    cmd === "i18n" ||
+    cmd === "export"
+) {
     const [name] = extraArgs;
 
     const init = require("../lib/init");
@@ -150,6 +140,7 @@ Commands:
     create source
     create index
     convert data
+    export images
     start
       --logs
       --workers

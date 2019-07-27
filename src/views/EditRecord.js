@@ -55,7 +55,7 @@ const Image = (
         image: ImageType,
         title: string,
     },
-    {gettext}: Context,
+    {gettext}: Context
 ) => (
     <div className="img col-md-3 col-xs-6 col-sm-4" key={image._id}>
         <div className="img-wrap">
@@ -81,7 +81,8 @@ const Image = (
                     <span
                         className="glyphicon glyphicon-remove"
                         aria-hidden="true"
-                    />{" "}
+                    />
+                    {" "}
                     {gettext("Remove Image")}
                 </button>
             </form>
@@ -100,7 +101,9 @@ const Title = ({title}: {title: string}) => (
             marginBottom: 15,
         }}
     >
-        <h1 className="panel-title">{title}</h1>
+        <h1 className="panel-title">
+            {title}
+        </h1>
     </div>
 );
 
@@ -121,7 +124,9 @@ const Images = (props: Props & {title: string}) => {
 
 const ImageForm = (props, {gettext}: Context) => (
     <tr>
-        <th className="text-right">{gettext("Add Images")}</th>
+        <th className="text-right">
+            {gettext("Add Images")}
+        </th>
         <td>
             <input
                 type="file"
@@ -135,15 +140,12 @@ const ImageForm = (props, {gettext}: Context) => (
 
 ImageForm.contextTypes = childContextTypes;
 
-class IDForm extends React.Component<
-    Props & {
-        curSource: string,
-        onValid: (state: boolean) => void,
-    },
-    {
-        unused: boolean,
-    },
-> {
+class IDForm extends React.Component<Props & {
+    curSource: string,
+    onValid: (state: boolean) => void,
+}, {
+    unused: boolean,
+}> {
     constructor(props) {
         super(props);
         this.state = {
@@ -196,7 +198,9 @@ class IDForm extends React.Component<
         return (
             <tr className={unused ? "has-success" : "has-error"}>
                 <th className="text-right">
-                    <label className="control-label">{gettext("ID")}</label>
+                    <label className="control-label">
+                        {gettext("ID")}
+                    </label>
                 </th>
                 <td>
                     <input
@@ -217,9 +221,7 @@ IDForm.contextTypes = childContextTypes;
 
 const HiddenSourceID = ({id}: {id: string}) => (
     <tr style={{display: "none"}}>
-        <td>
-            <input type="hidden" name="source" value={id} />
-        </td>
+        <td><input type="hidden" name="source" value={id} /></td>
     </tr>
 );
 
@@ -231,7 +233,7 @@ const SourceForm = (
     }: Props & {
         onSourceChange: (curSource: string) => void,
     },
-    {gettext}: Context,
+    {gettext}: Context
 ) => {
     if (source) {
         return <HiddenSourceID id={source} />;
@@ -248,7 +250,9 @@ const SourceForm = (
     return (
         <tr>
             <th className="text-right">
-                <label className="control-label">{gettext("Source")}</label>
+                <label className="control-label">
+                    {gettext("Source")}
+                </label>
             </th>
             <td>
                 <Select
@@ -365,14 +369,11 @@ const TypeEdit = ({
     return null;
 };
 
-class Contents extends React.Component<
-    Props,
-    {
-        showPrivate: boolean,
-        valid: boolean,
-        curSource: string,
-    },
-> {
+class Contents extends React.Component<Props, {
+    showPrivate: boolean,
+    valid: boolean,
+    curSource: string,
+}> {
     constructor(props) {
         super(props);
         this.state = {
@@ -417,7 +418,9 @@ class Contents extends React.Component<
 
             return (
                 <tr key={modelType}>
-                    <th className="text-right">{typeSchema.title}</th>
+                    <th className="text-right">
+                        {typeSchema.title}
+                    </th>
                     <td {...(isPrivate ? {"data-private": "true"} : {})}>
                         <TypeEdit
                             name={modelType}
@@ -442,7 +445,8 @@ class Contents extends React.Component<
                                 className="toggle-private"
                                 defaultChecked={this.state.showPrivate}
                                 onChange={e => this.togglePrivate(e)}
-                            />{" "}
+                            />
+                            {" "}
                             {gettext("Show private fields.")}
                         </label>
                     </td>
@@ -554,9 +558,7 @@ CloneButton.contextTypes = childContextTypes;
 const EditRecord = (props: Props) => {
     const {record, mode, title} = props;
     const postURL = record
-        ? record._id
-            ? record.getEditURL
-            : record.getCreateURL
+        ? record._id ? record.getEditURL : record.getCreateURL
         : "";
 
     return (

@@ -87,19 +87,10 @@ const TypeFilter = ({
         );
     } else if (typeSchema.type === "FixedString") {
         const expectedValues = typeSchema.values || {};
-        let values = [];
-
-        if (Array.isArray(expectedValues)) {
-            values = expectedValues.map(val => ({
-                id: val,
-                name: val,
-            }));
-        } else {
-            values = Object.keys(expectedValues).map(id => ({
-                id,
-                name: expectedValues[id].name,
-            }));
-        }
+        let values = Object.keys(expectedValues).map(id => ({
+            id,
+            name: expectedValues[id].name,
+        }));
 
         if (values.length === 0) {
             values = allValues.map(text => ({
@@ -204,9 +195,9 @@ const SourceFilter = ({values, sources}: Props, {gettext}: Context) => (
             options={
                 sources
                     ? sources.map(source => ({
-                          value: source._id,
-                          label: source.name,
-                      }))
+                        value: source._id,
+                        label: source.name,
+                    }))
                     : []
             }
         />
@@ -273,9 +264,9 @@ const Sorts = ({values, sorts}: Props, {gettext}: Context) => (
             options={
                 sorts
                     ? sorts.map(sort => ({
-                          value: sort.id,
-                          label: sort.name,
-                      }))
+                        value: sort.id,
+                        label: sort.name,
+                    }))
                     : []
             }
             clearable={false}

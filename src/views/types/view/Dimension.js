@@ -33,13 +33,9 @@ const getDimension = (oldDimension, defaultUnit = "mm") => {
 const Dimension = ({
     dimension,
     defaultUnit,
-}: {
-    defaultUnit?: string,
-    dimension: DimensionType,
-}) => (
+}: {defaultUnit?: string, dimension: DimensionType}) => (
     <span>
-        {getDimension(dimension, defaultUnit)}
-        <br />
+        {getDimension(dimension, defaultUnit)}<br />
     </span>
 );
 
