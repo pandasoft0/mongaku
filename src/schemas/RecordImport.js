@@ -24,6 +24,7 @@ const states = [
     {
         id: "process.completed",
         name: i18n => i18n.gettext("Confirmation required."),
+        requiresManualConfirmation: true,
         // NOTE(jeresig): Do not auto-advance to importing the data
         // we want the user to make the call on the results.
         // batch.importRecords(callback);
@@ -87,7 +88,7 @@ const RecordImport = new db.schema(
             type: String,
             required: true,
         },
-    })
+    }),
 );
 
 Object.assign(RecordImport.methods, Import.methods, {
@@ -95,7 +96,7 @@ Object.assign(RecordImport.methods, Import.methods, {
         return urls.gen(
             lang,
             `/${this.getSource().type}` +
-                `/source/${this.source}/admin?records=${this._id}`
+                `/source/${this.source}/admin?records=${this._id}`,
         );
     },
 
@@ -195,7 +196,7 @@ Object.assign(RecordImport.methods, Import.methods, {
                         this.results = results;
                         callback();
                     });
-            }
+            },
         );
     },
 
@@ -210,7 +211,7 @@ Object.assign(RecordImport.methods, Import.methods, {
             process.nextTick(() =>
                 this.importRecords(() => {
                     // Ignore the result, user doesn't care.
-                })
+                }),
             );
 
             callback();
@@ -233,7 +234,8 @@ Object.assign(RecordImport.methods, Import.methods, {
                 }
 
                 if (
-                    result.result === "created" || result.result === "changed"
+                    result.result === "created" ||
+                    result.result === "changed"
                 ) {
                     Record.fromData(result.data, i18n, (err, record) => {
                         record.save(err => {
@@ -289,7 +291,7 @@ Object.assign(RecordImport.methods, Import.methods, {
                     // Advance to the next state
                     this.saveState("import.completed", callback);
                 });
-            }
+            },
         );
     },
 
@@ -308,7 +310,7 @@ Object.assign(RecordImport.methods, Import.methods, {
             {},
             {needsSimilarUpdate: true},
             {multi: true},
-            callback
+            callback,
         );
     },
 
@@ -320,23 +322,23 @@ Object.assign(RecordImport.methods, Import.methods, {
     getFilteredResults() {
         return {
             unprocessed: this.results.filter(
-                result => result.result === "unknown"
+                result => result.result === "unknown",
             ),
             created: this.results.filter(result => result.result === "created"),
             changed: this.results.filter(result => result.result === "changed"),
             deleted: this.results.filter(result => result.result === "deleted"),
             errors: this.results.filter(result => result.error),
             warnings: this.results.filter(
-                result => (result.warnings || []).length !== 0
+                result => (result.warnings || []).length !== 0,
             ),
         };
     },
 });
 
 Object.assign(RecordImport.statics, Import.statics, {
-    fromFile(fileName, source, type) {
+    fromFile(fileName, source, type, skipConfirmation) {
         const RecordImport = models("RecordImport");
-        return new RecordImport({source, fileName, type});
+        return new RecordImport({source, fileName, type, skipConfirmation});
     },
 
     getError(i18n, error) {
